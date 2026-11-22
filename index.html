@@ -4,20 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Znoow · Z-FORGE, suite de oficina nativa en Rust</title>
-<meta name="description" content="Z-FORGE es una suite de oficina nativa en Rust creada por Znoow (znoowmk): documentos Word, hojas de cálculo Excel, presentaciones, PDF con OCR, correo y búsqueda de archivos, con IA que corre en tu propio equipo. Para Linux y Windows.">
+<meta name="description" content="Z-FORGE es una suite de oficina nativa en Rust creada por Znoow (znoowmk): diez apps para documentos Word, hojas de cálculo Excel, presentaciones, PDF con OCR, correo, fotos y búsqueda de archivos, con IA que corre en tu propio equipo. Para Linux y Windows.">
 <meta name="author" content="Znoow">
 <meta name="theme-color" content="#0a0f1c">
 <link rel="canonical" href="https://znoowmk.github.io/">
 <link rel="icon" href="favicon.png">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Znoow · Z-FORGE, suite de oficina nativa en Rust">
-<meta property="og:description" content="Documentos, hojas de cálculo, presentaciones, PDF con OCR y correo. Nativa, rápida y con IA local. Linux y Windows.">
+<meta property="og:title" content="Z-FORGE · Diez apps, una sola fragua">
+<meta property="og:description" content="Suite de oficina nativa en Rust: documentos, hojas de cálculo, presentaciones, PDF con OCR y correo, con IA local. Linux y Windows.">
 <meta property="og:url" content="https://znoowmk.github.io/">
 <meta property="og:image" content="https://znoowmk.github.io/img/shots/sheetforge.webp">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  // The saved light/dark choice, applied before the page paints.
+  try { const t = localStorage.getItem("zf-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -36,7 +40,7 @@
       "name": "Z-FORGE",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Linux, Windows",
-      "description": "Suite de oficina nativa en Rust: DocForge (documentos), SheetForge (hojas de cálculo), SlideForge (presentaciones), PDFForge (PDF y OCR), MailForge (correo), ZipForge, GalleryForge, SearchForge y ForgeLauncher.",
+      "description": "Suite de oficina nativa en Rust: DocForge (documentos), SheetForge (hojas de cálculo), SlideForge (presentaciones), PDFForge (PDF y OCR), MailForge (correo), SearchForge, ZipForge, GalleryForge, PixelForge, MindForge y ForgeLauncher.",
       "author": {"@id": "https://znoowmk.github.io/#znoow"},
       "downloadUrl": "https://github.com/znoowmk/zforge-releases",
       "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
@@ -46,278 +50,459 @@
 </script>
 <style>
 :root{
-  --ink-0:#070b15;--ink-1:#0a0f1c;--ink-2:#0f1626;--ink-3:#141d31;
-  --line:rgba(238,241,248,.08);--line-2:rgba(238,241,248,.14);
-  --text:#eef1f8;--text-2:#a5b0c6;--text-3:#6f7b94;
-  --ember:#f5b21b;--ember-ink:#1a1204;
+  --bg:#0a0f1c;--bg-2:#0e1524;--bg-3:#131c30;--sunk:#070b15;
+  --line:rgba(238,241,248,.09);--line-2:rgba(238,241,248,.16);
+  --text:#eef1f8;--text-2:#a5b0c6;--text-3:#717d96;
+  --ember:#f5b21b;--ember-text:#f5b21b;
+  --glyph:226,214,186;--glyph-ember:245,178,27;
+  --shadow:0 40px 80px -40px rgba(0,0,0,.7);
   --ease:cubic-bezier(.2,.7,.2,1);
   --mono:"JetBrains Mono",ui-monospace,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f3f4f7;--bg-2:#ffffff;--bg-3:#eceef3;--sunk:#e6e9ef;
+    --line:rgba(16,22,38,.10);--line-2:rgba(16,22,38,.18);
+    --text:#111726;--text-2:#4b5569;--text-3:#6b7489;
+    --ember-text:#9a6500;--glyph:40,48,70;--glyph-ember:176,115,0;
+    --shadow:0 30px 60px -30px rgba(16,22,38,.25);color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f3f4f7;--bg-2:#ffffff;--bg-3:#eceef3;--sunk:#e6e9ef;
+  --line:rgba(16,22,38,.10);--line-2:rgba(16,22,38,.18);
+  --text:#111726;--text-2:#4b5569;--text-3:#6b7489;
+  --ember-text:#9a6500;--glyph:40,48,70;--glyph-ember:176,115,0;
+  --shadow:0 30px 60px -30px rgba(16,22,38,.25);color-scheme:light;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-body{margin:0;background:var(--ink-1);color:var(--text);font:16px/1.6 Inter,system-ui,sans-serif;font-feature-settings:"cv11","ss01"}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 Inter,system-ui,sans-serif;transition:background-color .25s var(--ease),color .25s var(--ease)}
 a{color:inherit}
 img{max-width:100%}
-.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+button{font:inherit;color:inherit}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 :focus-visible{outline:2px solid var(--ember);outline-offset:3px;border-radius:6px}
 
-/* Header */
-.top{position:sticky;top:0;z-index:10;background:rgba(10,15,28,.82);backdrop-filter:saturate(1.2) blur(10px);-webkit-backdrop-filter:saturate(1.2) blur(10px);border-bottom:1px solid var(--line)}
-.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:600;text-decoration:none;letter-spacing:-.1px}
-.brand img{width:28px;height:28px;border-radius:7px}
-.nav{display:flex;align-items:center;gap:24px}
-.nav a{color:var(--text-2);text-decoration:none;font-size:15px;transition:color .15s var(--ease)}
-.nav a:hover{color:var(--text)}
-.btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:10px;text-decoration:none;font-weight:500;font-size:15px;border:1px solid var(--line-2);color:var(--text);transition:background-color .15s var(--ease),border-color .15s var(--ease),transform .1s var(--ease)}
-.btn:hover{border-color:rgba(238,241,248,.3);background:rgba(238,241,248,.04)}
+.sheet{max-width:1240px;margin:0 auto;border-left:1px solid var(--line);border-right:1px solid var(--line);position:relative}
+.band{position:relative;border-bottom:1px solid var(--line)}
+.band::before,.band::after{content:"";position:absolute;bottom:-5px;width:9px;height:9px;background:
+  linear-gradient(var(--text-3),var(--text-3)) center/1px 9px no-repeat,
+  linear-gradient(var(--text-3),var(--text-3)) center/9px 1px no-repeat;opacity:.7;z-index:2}
+.band::before{left:-5px}.band::after{right:-5px}
+.pad{padding-left:48px;padding-right:48px}
+.label{display:flex;justify-content:space-between;gap:16px;padding:14px 48px;border-bottom:1px solid var(--line);color:var(--text-3);font-size:12.5px}
+.label b{color:var(--text-2);font-weight:500}
+
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1240px;margin:0 auto;display:flex;align-items:center;height:60px;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;height:100%;padding:0 20px;font-weight:600;text-decoration:none;border-right:1px solid var(--line)}
+.brand img{width:26px;height:26px;border-radius:7px}
+.links{display:flex;gap:4px;padding:0 12px;flex:1}
+.links a{color:var(--text-2);text-decoration:none;font-size:14.5px;padding:6px 10px;border-radius:8px;transition:color .15s var(--ease),background-color .15s var(--ease)}
+.links a:hover{color:var(--text);background:var(--bg-3)}
+.iconbtn{display:grid;place-items:center;width:60px;height:100%;border:0;border-left:1px solid var(--line);background:none;cursor:pointer;color:var(--text-2);transition:color .15s var(--ease),background-color .15s var(--ease)}
+.iconbtn:hover{color:var(--text);background:var(--bg-3)}
+.iconbtn svg{width:18px;height:18px}
+.top .get{height:100%;display:flex;align-items:center;padding:0 22px;background:var(--text);color:var(--bg);text-decoration:none;font-weight:500;font-size:14.5px;transition:opacity .15s var(--ease)}
+.top .get:hover{opacity:.9}
+.sun{display:none}
+:root[data-theme="light"] .sun{display:block}:root[data-theme="light"] .moon{display:none}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .sun{display:block}:root:not([data-theme="dark"]) .moon{display:none}}
+
+.btn{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 20px;border-radius:10px;text-decoration:none;font-weight:500;font-size:15px;border:1px solid var(--line-2);background:none;cursor:pointer;color:var(--text);transition:background-color .15s var(--ease),border-color .15s var(--ease),transform .1s var(--ease)}
+.btn:hover{background:var(--bg-3)}
 .btn:active{transform:scale(.98)}
-.btn.primary{background:var(--text);color:var(--ink-1);border-color:var(--text)}
-.btn.primary:hover{background:#fff}
-.btn.sm{height:36px;padding:0 14px;font-size:14px}
-.btn svg{width:16px;height:16px}
+.split{display:inline-flex;border-radius:10px;background:var(--text);position:relative}
+.split a{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 20px;color:var(--bg);text-decoration:none;font-weight:500;font-size:15px}
+.split a svg{width:17px;height:17px}
+.split summary{list-style:none;display:grid;place-items:center;width:48px;height:48px;border-left:1px solid color-mix(in srgb,var(--bg) 25%,transparent);color:var(--bg);cursor:pointer}
+.split summary::-webkit-details-marker{display:none}
+.split summary svg{width:16px;height:16px;transition:transform .15s var(--ease)}
+.split details[open] summary svg{transform:rotate(180deg)}
+.menu{position:absolute;left:0;top:56px;z-index:5;min-width:320px;padding:6px;border:1px solid var(--line-2);border-radius:12px;background:var(--bg-2);box-shadow:var(--shadow)}
+.menu a{display:flex;justify-content:space-between;gap:16px;height:auto;padding:10px 12px;border-radius:8px;color:var(--text);font-size:14.5px}
+.menu a span{color:var(--text-3);font-family:var(--mono);font-size:12.5px}
+.menu a:hover{background:var(--bg-3)}
 
-/* Hero */
-.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:radial-gradient(120% 80% at 78% 40%,#121a2e 0%,var(--ink-1) 60%)}
-.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);align-items:center;gap:32px;min-height:calc(100svh - 64px);padding-top:48px;padding-bottom:48px}
-.eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--text-2);font-size:13px;margin-bottom:24px}
-.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--ember)}
-h1{font-size:64px;line-height:1.02;letter-spacing:-1.6px;font-weight:600;margin:0 0 24px;max-width:11ch}
-h1 em{font-style:normal;color:var(--ember)}
-.hero p.lead{color:var(--text-2);font-size:19px;line-height:1.55;margin:0 0 32px;max-width:36ch}
-.cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
-.formats{color:var(--text-3);font-size:13px}
-.formats span+span::before{content:"·";margin:0 8px;color:var(--text-3)}
-.forge{position:relative;aspect-ratio:1/1;width:100%;max-width:620px;justify-self:end}
-.forge canvas{width:100%;height:100%;display:block}
-.forge .plate{position:absolute;inset:auto 0 4% auto;color:var(--text-3);font-size:12px;text-align:right}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;padding-top:88px;padding-bottom:88px}
+h1{font-size:68px;line-height:1;letter-spacing:-2px;font-weight:600;margin:0 0 24px}
+h1 em{font-style:normal;color:var(--ember-text)}
+.lead{color:var(--text-2);font-size:19px;line-height:1.55;margin:0 0 32px;max-width:40ch}
+.cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+.meta{color:var(--text-3);font-size:13px}
+.meta a{color:var(--text-2)}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:22px 12px;justify-items:center}
+.ic{display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;color:var(--text-2);font-size:13px;opacity:0;transform:translateY(10px);animation:rise .6s var(--ease) forwards;animation-delay:calc(var(--i) * 45ms + .15s)}
+.ic img{width:88px;height:88px;border-radius:20px;transition:transform .15s var(--ease)}
+.ic:hover{color:var(--text)}
+.ic:hover img{transform:translateY(-3px)}
+.ic.launcher{grid-column:3}
 
-/* Figures */
-.figures-band{border-bottom:1px solid var(--line)}
 .figures{display:grid;grid-template-columns:repeat(3,1fr)}
-.fig{padding:40px 32px 40px 0;border-right:1px solid var(--line)}
-.fig+.fig{padding-left:32px}
+.fig{padding:36px 48px;border-right:1px solid var(--line)}
 .fig:last-child{border-right:0}
-.fig b{display:block;font-family:var(--mono);font-weight:500;font-size:40px;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1.1}
-.fig b small{font-size:18px;color:var(--text-2);letter-spacing:0;margin-left:4px}
+.fig b{display:block;font-family:var(--mono);font-weight:500;font-size:40px;letter-spacing:-1px;line-height:1.1;font-variant-numeric:tabular-nums}
+.fig b small{font-size:17px;color:var(--text-2);letter-spacing:0;margin-left:4px}
 .fig span{color:var(--text-2);font-size:15px}
 
-/* Sections */
-section{padding:112px 0}
-.head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:40px}
+.section{padding-top:80px;padding-bottom:96px}
+.head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:36px}
 h2{font-size:40px;line-height:1.1;letter-spacing:-.8px;font-weight:600;margin:0;max-width:18ch}
-.head p{color:var(--text-2);margin:0;max-width:40ch}
+.head p{color:var(--text-2);margin:0;max-width:42ch}
 
-/* Tour */
 .tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px}
-.tab{position:relative;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px 0 10px;border-radius:10px;border:1px solid transparent;background:none;color:var(--text-2);font:500 14px Inter,sans-serif;cursor:pointer;transition:background-color .15s var(--ease),color .15s var(--ease),border-color .15s var(--ease)}
+.tab{position:relative;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px 0 10px;border-radius:10px;border:1px solid transparent;background:none;color:var(--text-2);font-weight:500;font-size:14px;cursor:pointer;transition:background-color .15s var(--ease),color .15s var(--ease),border-color .15s var(--ease)}
 .tab img{width:22px;height:22px;border-radius:6px}
-.tab:hover{color:var(--text);background:rgba(238,241,248,.04)}
-.tab[aria-selected="true"]{color:var(--text);background:var(--ink-3);border-color:var(--line)}
+.tab:hover{color:var(--text);background:var(--bg-3)}
+.tab[aria-selected="true"]{color:var(--text);background:var(--bg-3);border-color:var(--line)}
 .tab .run{position:absolute;left:10px;right:10px;bottom:-1px;height:2px;border-radius:2px;background:var(--ember);transform-origin:left;transform:scaleX(0)}
-.tab[aria-selected="true"] .run{animation:run var(--dwell,7s) linear forwards}
+.tab[aria-selected="true"] .run{animation:run 7s linear forwards}
 .tour.paused .tab .run{animation-play-state:paused}
 @keyframes run{to{transform:scaleX(1)}}
-.window{border:1px solid var(--line-2);border-radius:14px;background:var(--ink-0);overflow:hidden;box-shadow:0 40px 80px -40px rgba(0,0,0,.7)}
-.window .bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:40px;padding:0 14px;border-bottom:1px solid var(--line);background:var(--ink-2);font-size:13px;color:var(--text-2)}
+.window{border:1px solid var(--line-2);border-radius:14px;background:var(--sunk);overflow:hidden;box-shadow:var(--shadow)}
+.window .bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:40px;padding:0 14px;border-bottom:1px solid var(--line);background:var(--bg-2);font-size:13px;color:var(--text-2)}
 .window .bar .ico{width:18px;height:18px;border-radius:5px}
 .window .bar .ctl{justify-self:end;display:flex;gap:14px;color:var(--text-3)}
 .window .bar .ctl i{display:block;width:10px;height:10px;border:1.5px solid currentColor;border-radius:2px}
 .window .bar .ctl i:first-child{height:0;border-width:1.5px 0 0;margin-top:5px}
-.screen{position:relative;aspect-ratio:16/10;background:var(--ink-1)}
+.screen{position:relative;aspect-ratio:16/10;background:#0a0f1c}
 .screen img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left;opacity:0;transition:opacity .35s var(--ease)}
 .screen img.on{opacity:1}
-.caption{display:flex;justify-content:space-between;gap:24px;margin-top:20px;color:var(--text-2)}
+.caption{display:flex;justify-content:space-between;gap:24px;margin-top:18px;color:var(--text-2)}
 .caption strong{color:var(--text);font-weight:500}
 
-/* App index */
 .index{display:grid;grid-template-columns:repeat(2,1fr);gap:0 48px;border-top:1px solid var(--line)}
-.row{display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start;padding:20px 0;border-bottom:1px solid var(--line)}
-.row img{width:44px;height:44px;border-radius:10px}
+.row{display:grid;grid-template-columns:48px 1fr;gap:16px;align-items:start;padding:18px 0;border-bottom:1px solid var(--line)}
+.row img{width:48px;height:48px;border-radius:11px}
 .row h3{margin:0 0 2px;font-size:16px;font-weight:600}
 .row p{margin:0;color:var(--text-2);font-size:15px;line-height:1.5}
 
-/* Principles */
-.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:48px}
-.principles .n{color:var(--ember);font-size:13px;margin-bottom:16px;display:block}
+.principles{display:grid;grid-template-columns:repeat(3,1fr)}
+.principles>div{padding:36px 48px;border-right:1px solid var(--line)}
+.principles>div:last-child{border-right:0}
+.principles .n{color:var(--ember-text);font-size:12.5px;margin-bottom:20px;display:block}
 .principles h3{font-size:20px;font-weight:600;margin:0 0 8px;letter-spacing:-.2px}
 .principles p{color:var(--text-2);margin:0}
 
-/* Projects */
 .projects{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.proj{display:block;padding:28px;border:1px solid var(--line);border-radius:14px;background:var(--ink-2);text-decoration:none;transition:border-color .15s var(--ease),background-color .15s var(--ease)}
-.proj:hover{border-color:var(--line-2);background:var(--ink-3)}
-.proj .k{color:var(--text-3);font-size:13px}
+.proj{display:block;padding:28px;border:1px solid var(--line);border-radius:14px;background:var(--bg-2);text-decoration:none;transition:border-color .15s var(--ease),background-color .15s var(--ease)}
+.proj:hover{border-color:var(--line-2);background:var(--bg-3)}
+.proj .k{color:var(--text-3);font-size:12.5px}
 .proj h3{margin:8px 0;font-size:20px;font-weight:600}
 .proj p{margin:0;color:var(--text-2);font-size:15px}
-.proj .go{display:inline-flex;align-items:center;gap:6px;margin-top:20px;font-size:14px;color:var(--text)}
+.proj .go{display:inline-flex;align-items:center;gap:6px;margin-top:20px;font-size:14px}
 .proj .go svg{width:14px;height:14px;transition:transform .15s var(--ease)}
 .proj:hover .go svg{transform:translateX(3px)}
 
-.english{color:var(--text-2);max-width:60ch}
-.english h2{margin-bottom:16px}
+.forgeband{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:center;gap:32px;overflow:hidden}
+.forgeband .txt{padding:80px 0 80px 48px}
+.forge{aspect-ratio:1/1;width:100%;max-width:520px;justify-self:end;margin-right:-40px}
+.forge canvas{width:100%;height:100%;display:block}
+.cmd{display:flex;align-items:center;gap:12px;margin-top:28px;max-width:640px;padding:6px 6px 6px 16px;border:1px solid var(--line-2);border-radius:10px;background:var(--sunk);font-family:var(--mono);font-size:13.5px;color:var(--text-2)}
+.cmd code{flex:1;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.cmd code::-webkit-scrollbar{display:none}
+.cmd code b{color:var(--ember-text);font-weight:500}
+.cmd button{flex:none;height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--line-2);background:var(--bg-2);cursor:pointer;font-family:Inter,sans-serif;font-size:13px;transition:background-color .15s var(--ease)}
+.cmd button:hover{background:var(--bg-3)}
 
-footer{border-top:1px solid var(--line);padding:32px 0;color:var(--text-3);font-size:14px}
-footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.english p{color:var(--text-2);max-width:64ch;margin:16px 0 0}
+
+footer .in{max-width:1240px;margin:0 auto;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:24px 48px;color:var(--text-3);font-size:14px;border-left:1px solid var(--line);border-right:1px solid var(--line)}
 footer a{color:var(--text-2);text-decoration:none}
 footer a:hover{color:var(--text)}
 
-/* Entrance */
 .rise{opacity:0;transform:translateY(12px);animation:rise .7s var(--ease) forwards}
-.rise:nth-child(2){animation-delay:.06s}.rise:nth-child(3){animation-delay:.12s}.rise:nth-child(4){animation-delay:.18s}.rise:nth-child(5){animation-delay:.24s}
+.rise.d1{animation-delay:.05s}.rise.d2{animation-delay:.1s}.rise.d3{animation-delay:.15s}
 @keyframes rise{to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.rise{animation:none;opacity:1;transform:none}.tab .run{display:none}html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){.rise,.ic{animation:none;opacity:1;transform:none}.tab .run{display:none}html{scroll-behavior:auto}}
 
-@media (max-width:960px){
-  .wrap{padding:0 20px}
-  .hero .wrap{grid-template-columns:1fr;min-height:0;padding-top:40px}
-  h1{font-size:44px;letter-spacing:-1px}
-  .forge{max-width:420px;justify-self:center;order:2}
-  .figures{grid-template-columns:1fr}.fig,.fig+.fig{border-right:0;border-bottom:1px solid var(--line);padding:28px 0}.fig:last-child{border-bottom:0}
-  section{padding:72px 0}
+@media (max-width:1000px){
+  .pad,.label{padding-left:20px;padding-right:20px}
+  .hero{grid-template-columns:1fr;padding-top:48px;padding-bottom:56px;gap:48px}
+  h1{font-size:46px;letter-spacing:-1.2px}
+  .grid{grid-template-columns:repeat(4,1fr);gap:18px 8px}
+  .ic img{width:64px;height:64px;border-radius:15px}
+  .ic.launcher{grid-column:auto}
+  .figures,.principles{grid-template-columns:1fr}
+  .fig,.principles>div{border-right:0;border-bottom:1px solid var(--line);padding:28px 20px}
+  .fig:last-child,.principles>div:last-child{border-bottom:0}
+  .section{padding-top:56px;padding-bottom:64px}
   h2{font-size:32px}
   .head{flex-direction:column;align-items:start}
-  .index,.principles,.projects{grid-template-columns:1fr}
-  .principles{gap:32px}
-  .nav a.link{display:none}
+  .index,.projects{grid-template-columns:1fr}
+  .forgeband{grid-template-columns:1fr}
+  .forgeband .txt{padding:56px 20px 0}
+  .forge{justify-self:center;margin:0;max-width:360px}
+  .links{display:none}
+  .top .in{justify-content:space-between}
+  .brand{margin-right:auto}
   .caption{flex-direction:column;gap:4px}
+  .label .r{display:none}
+  .menu{min-width:280px}
 }
+@media (max-width:420px){.grid{grid-template-columns:repeat(3,1fr)}.top .get{padding:0 14px}}
 </style>
 </head>
 <body>
 <header class="top">
-  <div class="wrap">
-    <a class="brand" href="./"><img src="img/apps/forgelauncher.png" alt="">Znoow</a>
-    <nav class="nav">
-      <a class="link" href="#apps">Apps</a>
-      <a class="link" href="#proyectos">Proyectos</a>
-      <a class="link" href="https://github.com/znoowmk">GitHub</a>
-      <a class="btn sm" href="https://github.com/znoowmk/zforge-releases#readme">Descargar</a>
+  <div class="in">
+    <a class="brand" href="./"><img src="img/apps/forgelauncher.png" alt="">Z-FORGE</a>
+    <nav class="links">
+      <a href="#apps">Apps</a>
+      <a href="#recorrido">Recorrido</a>
+      <a href="#proyectos">Código abierto</a>
+      <a href="https://github.com/znoowmk">GitHub</a>
     </nav>
+    <button class="iconbtn" id="theme" type="button" aria-label="Cambiar entre modo claro y oscuro">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+    <a class="get" href="#descargar">Descargar</a>
   </div>
 </header>
 
-<main>
-<div class="hero">
-  <div class="wrap">
-    <div>
-      <div class="eyebrow mono rise"><span class="dot"></span>Z-FORGE · suite de oficina en Rust</div>
-      <h1 class="rise">Tu oficina, <em>forjada</em> en Rust</h1>
-      <p class="lead rise">Documentos, hojas de cálculo, presentaciones, PDF con OCR y correo. Nativa, rápida y con IA que corre en tu propio equipo.</p>
-      <div class="cta rise">
-        <a class="btn primary" href="https://github.com/znoowmk/zforge-releases#readme">Descargar gratis
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg></a>
-        <a class="btn" href="#recorrido">Ver las apps</a>
+<main class="sheet">
+  <div class="band">
+    <div class="label mono"><span><b>00</b> / Z-FORGE de Znoow</span><span class="r">Rust nativo · IA local · Linux y Windows</span></div>
+    <div class="hero pad">
+      <div>
+        <h1 class="rise">Diez apps.<br>Una sola <em>fragua</em>.</h1>
+        <p class="lead rise d1">Documentos, hojas de cálculo, presentaciones, PDF con OCR, correo, fotos y búsqueda. Nativas en Rust, con IA que corre en tu propio equipo.</p>
+        <div class="cta rise d2">
+          <div class="split">
+            <a id="dl" href="https://github.com/znoowmk/zforge-releases#readme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg><span id="dlText">Descargar ForgeLauncher</span></a>
+            <details>
+              <summary aria-label="Otras descargas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+              <div class="menu" id="dlMenu">
+                <a href="https://github.com/znoowmk/zforge-releases#readme">Todas las descargas <span>README</span></a>
+              </div>
+            </details>
+          </div>
+          <a class="btn" href="#recorrido">Ver las apps</a>
+        </div>
+        <div class="meta mono rise d3"><span id="dlMeta">Linux x86_64 · Windows 10 y 11</span> · <a href="https://github.com/znoowmk/zforge-releases/releases">todas las versiones</a></div>
       </div>
-      <div class="formats mono rise"><span>Linux</span><span>Windows</span><span>.docx .xlsx .pptx .pdf</span></div>
-    </div>
-    <div class="forge" aria-hidden="true">
-      <canvas id="forge"></canvas>
+      <div class="grid" id="apps" aria-label="Las apps de Z-FORGE"></div>
     </div>
   </div>
-</div>
 
-<div class="figures-band"><div class="wrap figures">
-  <div class="fig"><b>~10<small>pág/s</small></b><span>de OCR en documentos escaneados, con ForgeOCR en GPU</span></div>
-  <div class="fig"><b>778<small>mil</small></b><span>archivos encontrados al instante mientras escribes, con SearchForge</span></div>
-  <div class="fig"><b>22<small>mil</small></b><span>pruebas automáticas que corren antes de cada versión</span></div>
-</div></div>
-
-<section id="recorrido">
-  <div class="wrap">
-    <div class="head">
-      <h2>Cada app, como la conoces</h2>
-      <p>Abren y guardan tus archivos de Office tal como se ven en Word, Excel y PowerPoint.</p>
+  <div class="band">
+    <div class="figures">
+      <div class="fig"><b>~10<small>pág/s</small></b><span>de OCR en escaneos, con ForgeOCR en GPU</span></div>
+      <div class="fig"><b>778<small>mil</small></b><span>archivos encontrados al instante mientras escribes</span></div>
+      <div class="fig"><b>22<small>mil</small></b><span>pruebas automáticas antes de cada versión</span></div>
     </div>
-    <div class="tour" id="tour">
-      <div class="tabs" role="tablist" aria-label="Apps de Z-FORGE"></div>
-      <div class="window">
-        <div class="bar"><img class="ico" id="barIco" src="img/apps/sheetforge.png" alt=""><span id="barTitle">SheetForge</span><span class="ctl" aria-hidden="true"><i></i><i></i></span></div>
-        <div class="screen" id="screen"></div>
+  </div>
+
+  <div class="band" id="recorrido">
+    <div class="label mono"><span><b>01</b> / Recorrido</span><span class="r">Capturas reales, sin retoques</span></div>
+    <div class="section pad">
+      <div class="head">
+        <h2>Cada app, como la conoces</h2>
+        <p>Abren y guardan tus archivos de Office tal como se ven en Word, Excel y PowerPoint.</p>
       </div>
-      <div class="caption"><span id="capText"></span><span class="mono" id="capCount"></span></div>
+      <div class="tour" id="tour">
+        <div class="tabs" role="tablist" aria-label="Apps de Z-FORGE"></div>
+        <div class="window">
+          <div class="bar"><img class="ico" id="barIco" src="img/apps/sheetforge.png" alt=""><span id="barTitle">SheetForge</span><span class="ctl" aria-hidden="true"><i></i><i></i></span></div>
+          <div class="screen" id="screen"></div>
+        </div>
+        <div class="caption"><span id="capText"></span><span class="mono" id="capCount"></span></div>
+      </div>
     </div>
   </div>
-</section>
 
-<section id="apps" style="padding-top:0">
-  <div class="wrap">
-    <div class="head">
-      <h2>Toda la suite</h2>
-      <p>Una sola apariencia, un solo instalador y las mismas teclas en todas.</p>
-    </div>
-    <div class="index">
-      <div class="row"><img src="img/apps/docforge.png" alt=""><div><h3>DocForge</h3><p>Documentos de Word sin Word, con MindForge para corregir, resumir y traducir</p></div></div>
-      <div class="row"><img src="img/apps/sheetforge.png" alt=""><div><h3>SheetForge</h3><p>Hojas de cálculo con las fórmulas de Excel y Macros IA que prueban en una copia</p></div></div>
-      <div class="row"><img src="img/apps/slideforge.png" alt=""><div><h3>SlideForge</h3><p>Presentaciones con gráficas, SmartArt, transiciones y vista de orador</p></div></div>
-      <div class="row"><img src="img/apps/pdfforge.png" alt=""><div><h3>PDFForge</h3><p>Lee, firma, rellena, une, censura y protege PDF, con OCR para escaneos</p></div></div>
-      <div class="row"><img src="img/apps/mailforge.png" alt=""><div><h3>MailForge</h3><p>Todas tus cuentas de correo, con calendario, tareas y contactos</p></div></div>
-      <div class="row"><img src="img/apps/searchforge.png" alt=""><div><h3>SearchForge</h3><p>Encuentra cualquier archivo del disco, también por lo que dice adentro</p></div></div>
-      <div class="row"><img src="img/apps/zipforge.png" alt=""><div><h3>ZipForge</h3><p>Comprime, descomprime y mira lo que hay dentro sin extraer nada</p></div></div>
-      <div class="row"><img src="img/apps/galleryforge.png" alt=""><div><h3>GalleryForge y PixelForge</h3><p>Tus fotos por carpeta y un editor para ajustar, girar y pixelar datos</p></div></div>
-      <div class="row"><img src="img/apps/mindforge.png" alt=""><div><h3>MindForge</h3><p>El asistente de IA de la suite, con modelos que corren en tu equipo</p></div></div>
-      <div class="row"><img src="img/apps/forgelauncher.png" alt=""><div><h3>ForgeLauncher</h3><p>Instala y actualiza toda la suite desde un solo lugar</p></div></div>
+  <div class="band">
+    <div class="label mono"><span><b>02</b> / La suite</span><span class="r">Una apariencia, un instalador</span></div>
+    <div class="section pad">
+      <div class="head">
+        <h2>Toda la suite</h2>
+        <p>El mismo modo claro u oscuro, las mismas teclas y un solo lugar para instalar y actualizar.</p>
+      </div>
+      <div class="index" id="index"></div>
     </div>
   </div>
-</section>
 
-<section style="border-top:1px solid var(--line)">
-  <div class="wrap">
-    <div class="head"><h2>Hecha para quedarse en tu computadora</h2></div>
+  <div class="band">
+    <div class="label mono"><span><b>03</b> / Principios</span><span class="r">Hecha para quedarse en tu computadora</span></div>
     <div class="principles">
-      <div><span class="n mono">01</span><h3>Nativa</h3><p>Escrita en Rust, sin un navegador escondido. Arranca al instante y usa poca memoria.</p></div>
-      <div><span class="n mono">02</span><h3>IA local</h3><p>Funciona con Ollama en tu máquina. Tus documentos no salen a ninguna nube.</p></div>
-      <div><span class="n mono">03</span><h3>Tus formatos</h3><p>Office y OpenDocument, abiertos y guardados sin mover el diseño.</p></div>
+      <div><span class="n mono">Nativa</span><h3>Sin navegador escondido</h3><p>Escrita en Rust. Arranca al instante y usa poca memoria.</p></div>
+      <div><span class="n mono">IA local</span><h3>Tus documentos, en tu equipo</h3><p>Funciona con Ollama en tu máquina. Nada sale a la nube.</p></div>
+      <div><span class="n mono">Tus formatos</span><h3>Office y OpenDocument</h3><p>Abre y guarda .docx, .xlsx, .pptx, .odt y .pdf sin mover el diseño.</p></div>
     </div>
   </div>
-</section>
 
-<section id="proyectos" style="border-top:1px solid var(--line)">
-  <div class="wrap">
-    <div class="head">
-      <h2>Código abierto</h2>
-      <p>Piezas de Z-FORGE publicadas para que cualquiera las use.</p>
-    </div>
-    <div class="projects">
-      <a class="proj" href="https://github.com/znoowmk/forge-ocr"><span class="k mono">Rust · ONNX Runtime</span><h3>forge-ocr</h3><p>OCR para documentos escaneados con PP-OCRv5 sobre TensorRT, CUDA o CPU. PDF con texto buscable y orden de lectura en varias columnas.</p><span class="go">Ver en GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
-      <a class="proj" href="https://github.com/znoowmk/z-forge-cli"><span class="k mono">Rust · MCP</span><h3>z-forge-cli</h3><p>Herramientas de línea de comandos y servidor MCP: CutForge, SpaceForge, DroidForge y SearchForge.</p><span class="go">Ver en GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+  <div class="band" id="proyectos">
+    <div class="label mono"><span><b>04</b> / Código abierto</span><span class="r">github.com/znoowmk</span></div>
+    <div class="section pad">
+      <div class="head">
+        <h2>Piezas para cualquiera</h2>
+        <p>Partes de Z-FORGE publicadas como proyectos propios.</p>
+      </div>
+      <div class="projects">
+        <a class="proj" href="https://github.com/znoowmk/forge-ocr"><span class="k mono">Rust · ONNX Runtime</span><h3>forge-ocr</h3><p>OCR para documentos escaneados con PP-OCRv5 sobre TensorRT, CUDA o CPU. PDF con texto buscable y orden de lectura en varias columnas.</p><span class="go">Ver en GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+        <a class="proj" href="https://github.com/znoowmk/z-forge-cli"><span class="k mono">Rust · MCP</span><h3>z-forge-cli</h3><p>Herramientas de línea de comandos y servidor MCP: CutForge, SpaceForge, DroidForge y SearchForge.</p><span class="go">Ver en GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      </div>
     </div>
   </div>
-</section>
 
-<section lang="en" style="border-top:1px solid var(--line)">
-  <div class="wrap"><div class="english">
-    <h2>In English</h2>
-    <p>Z-FORGE is a native Rust office suite by Znoow: documents, spreadsheets, presentations, PDF with OCR, email and instant file search, with AI that runs on your own computer. Free downloads for Linux and Windows on <a href="https://github.com/znoowmk/zforge-releases">GitHub</a>.</p>
-  </div></div>
-</section>
+  <div class="band" id="descargar">
+    <div class="label mono"><span><b>05</b> / Descargar</span><span class="r">Gratis</span></div>
+    <div class="forgeband">
+      <div class="txt">
+        <h2>Instala toda la suite en un minuto</h2>
+        <p class="lead" style="margin:16px 0 0">ForgeLauncher instala y mantiene al día cada app. En Linux, pega esto en una terminal:</p>
+        <div class="cmd"><code><b>curl</b> -fsSL https://raw.githubusercontent.com/znoowmk/zforge-releases/main/instalar.sh | sh</code><button type="button" id="copy">Copiar</button></div>
+        <p class="meta mono" style="margin-top:16px">En Windows, descarga el instalador de ForgeLauncher con el botón de arriba.</p>
+      </div>
+      <div class="forge" aria-hidden="true"><canvas id="forge"></canvas></div>
+    </div>
+  </div>
+
+  <div class="band" lang="en">
+    <div class="label mono"><span><b>06</b> / In English</span></div>
+    <div class="section pad english">
+      <h2>A native Rust office suite</h2>
+      <p>Z-FORGE by Znoow: documents, spreadsheets, presentations, PDF with OCR, email, photos and instant file search, with AI that runs on your own computer. Free downloads for Linux and Windows on <a href="https://github.com/znoowmk/zforge-releases">GitHub</a>.</p>
+    </div>
+  </div>
 </main>
 
-<footer><div class="wrap"><span>© 2026 Znoow</span><span><a href="https://github.com/znoowmk">github.com/znoowmk</a> · <a href="https://github.com/znoowmk/zforge-releases/blob/main/LICENCIAS.md">Licencias de terceros</a></span></div></footer>
+<footer><div class="in"><span>© 2026 Znoow</span><span><a href="https://github.com/znoowmk">github.com/znoowmk</a> · <a href="https://github.com/znoowmk/zforge-releases/blob/main/LICENCIAS.md">Licencias de terceros</a></span></div></footer>
 
 <script>
 (() => {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const REPO = "https://github.com/znoowmk/zforge-releases";
 
-  // The Z-FORGE engraving, redrawn in the letters of "forge": brighter strokes take denser letters,
-  // and a few cells change now and then, like embers.
+  const root = document.documentElement;
+  document.getElementById("theme").addEventListener("click", () => {
+    const dark = root.dataset.theme ? root.dataset.theme === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+    root.dataset.theme = dark ? "light" : "dark";
+    try { localStorage.setItem("zf-theme", root.dataset.theme); } catch (e) {}
+  });
+
+  const apps = [
+    ["docforge", "DocForge", "Documentos de Word sin Word, con MindForge para corregir, resumir y traducir", "Una propuesta con títulos, listas y tabla, lista para .docx"],
+    ["sheetforge", "SheetForge", "Hojas de cálculo con las fórmulas de Excel y Macros IA que prueban en una copia", "Un reporte de ventas de Excel con su gráfica, abierto tal cual"],
+    ["slideforge", "SlideForge", "Presentaciones con gráficas, SmartArt, transiciones y vista de orador", "Un plan de dos diapositivas con temas y vista de orador"],
+    ["pdfforge", "PDFForge", "Lee, firma, rellena, une, censura y protege PDF, con OCR para escaneos", "Una factura con las herramientas para firmar, rellenar y unir"],
+    ["mailforge", "MailForge", "Todas tus cuentas de correo, con calendario, tareas y contactos", "Todas tus cuentas en una sola bandeja"],
+    ["searchforge", "SearchForge", "Encuentra cualquier archivo del disco, también por lo que dice adentro", "778 mil archivos indexados y buscables al instante"],
+    ["zipforge", "ZipForge", "Comprime, descomprime y mira lo que hay dentro sin extraer nada", null],
+    ["galleryforge", "GalleryForge", "Tus fotos por carpeta, con visor a pantalla completa", null],
+    ["pixelforge", "PixelForge", "Edita fotos: luz, color, filtros, girar y pixelar datos", null],
+    ["mindforge", "MindForge", "El asistente de IA de la suite, con modelos en tu equipo", null],
+    ["forgelauncher", "ForgeLauncher", "Instala y actualiza toda la suite desde un solo lugar", "Instala y actualiza toda la suite"]
+  ];
+  const tourApps = apps.filter((a) => a[3]);
+
+  const grid = document.getElementById("apps");
+  const index = document.getElementById("index");
+  apps.forEach(([id, name, desc, cap], i) => {
+    const a = document.createElement("a");
+    a.className = "ic" + (id === "forgelauncher" ? " launcher" : "");
+    a.style.setProperty("--i", i);
+    a.href = cap ? "#recorrido" : "#index";
+    a.innerHTML = `<img src="img/apps/${id}.png" alt="" width="88" height="88">${name}`;
+    a.title = desc;
+    if (cap) a.addEventListener("click", () => show(tourApps.findIndex((t) => t[0] === id), true));
+    grid.appendChild(a);
+    const r = document.createElement("div");
+    r.className = "row";
+    r.innerHTML = `<img src="img/apps/${id}.png" alt="" width="48" height="48"><div><h3>${name}</h3><p>${desc}</p></div>`;
+    index.appendChild(r);
+  });
+
+  const tour = document.getElementById("tour");
+  const tabs = tour.querySelector(".tabs");
+  const screen = document.getElementById("screen");
+  const imgs = tourApps.map(([id, name], i) => {
+    const im = new Image();
+    im.src = `img/shots/${id}.webp`; im.alt = `${name}, captura de pantalla`;
+    im.loading = i ? "lazy" : "eager";
+    screen.appendChild(im); return im;
+  });
+  const buttons = tourApps.map(([id, name], i) => {
+    const b = document.createElement("button");
+    b.className = "tab"; b.type = "button"; b.setAttribute("role", "tab");
+    b.innerHTML = `<img src="img/apps/${id}.png" alt="">${name}<span class="run"></span>`;
+    b.addEventListener("click", () => show(i, true));
+    tabs.appendChild(b); return b;
+  });
+  let current = 0;
+  function show(i, byHand) {
+    if (i < 0) return;
+    current = i;
+    buttons.forEach((b, j) => {
+      b.setAttribute("aria-selected", j === i ? "true" : "false");
+      const r = b.querySelector(".run"); r.style.animation = "none"; void r.offsetWidth; r.style.animation = "";
+    });
+    imgs.forEach((im, j) => im.classList.toggle("on", j === i));
+    document.getElementById("barIco").src = `img/apps/${tourApps[i][0]}.png`;
+    document.getElementById("barTitle").textContent = tourApps[i][1];
+    document.getElementById("capText").innerHTML = `<strong>${tourApps[i][1]}</strong> · ${tourApps[i][3]}`;
+    document.getElementById("capCount").textContent = `${String(i + 1).padStart(2, "0")} / ${String(tourApps.length).padStart(2, "0")}`;
+    if (byHand) tour.classList.add("paused");
+  }
+  buttons.forEach((b) => b.querySelector(".run").addEventListener("animationend", () => {
+    if (!tour.classList.contains("paused")) show((current + 1) % tourApps.length);
+  }));
+  tour.addEventListener("mouseenter", () => tour.classList.add("paused"));
+  tour.addEventListener("mouseleave", () => tour.classList.remove("paused"));
+  tour.addEventListener("focusin", () => tour.classList.add("paused"));
+  show(0);
+  if (reduce) tour.classList.add("paused");
+
+  const win = /Windows/i.test(navigator.userAgent);
+  document.getElementById("dlText").textContent = win ? "Descargar para Windows" : "Descargar para Linux";
+  fetch("https://api.github.com/repos/znoowmk/zforge-releases/releases?per_page=100")
+    .then((r) => r.ok ? r.json() : Promise.reject())
+    .then((rels) => {
+      const rel = rels.find((r) => /^forgelauncher-v/.test(r.tag_name) && !r.draft && !r.prerelease);
+      if (!rel) return;
+      const v = rel.tag_name.replace("forgelauncher-v", "");
+      const find = (re) => rel.assets.find((a) => re.test(a.name));
+      const options = [
+        ["Linux · .tar.gz", find(/linux-x86_64\.tar\.gz$/)],
+        ["Windows · instalador", find(/windows-x64-setup\.exe$/)],
+        ["Windows · portátil .zip", find(/windows-x64-portable\.zip$/)]
+      ].filter((o) => o[1]);
+      const main = win ? find(/windows-x64-setup\.exe$/) : find(/linux-x86_64\.tar\.gz$/);
+      if (main) document.getElementById("dl").href = main.browser_download_url;
+      document.getElementById("dlMeta").textContent = `ForgeLauncher ${v} · ${win ? "Windows 10 y 11" : "Linux x86_64"}`;
+      document.getElementById("dlMenu").innerHTML = options.map(([label, a]) => `<a href="${a.browser_download_url}">${label}<span>${(a.size / 1048576).toFixed(0)} MB</span></a>`).join("")
+        + `<a href="${REPO}#readme">Cada app por separado<span>README</span></a>`;
+    })
+    .catch(() => {});
+
+  document.getElementById("copy").addEventListener("click", (e) => {
+    const text = document.querySelector(".cmd code").textContent;
+    navigator.clipboard?.writeText(text).then(() => {
+      e.target.textContent = "Copiado";
+      setTimeout(() => (e.target.textContent = "Copiar"), 1600);
+    }).catch(() => {});
+  });
+
+  // The ForgeLauncher engraving, redrawn in the letters of "forge", embers flickering now and then.
   const canvas = document.getElementById("forge");
   const src = new Image();
   src.src = "img/engraving.png";
   src.onload = () => {
     const chars = " .:-forgeFORGE";
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let cells = [], cell = 9, cols = 0, rows = 0, ctx;
+    let cells = [], cell = 8, ctx, started = 0;
     const setup = () => {
       const box = canvas.getBoundingClientRect();
+      if (!box.width) return;
       canvas.width = Math.round(box.width * dpr);
       canvas.height = Math.round(box.height * dpr);
       ctx = canvas.getContext("2d");
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      cell = box.width < 480 ? 6 : 8;
-      cols = Math.floor(box.width / cell);
-      rows = Math.floor(box.height / cell);
+      cell = box.width < 400 ? 6 : 8;
+      const cols = Math.floor(box.width / cell), rows = Math.floor(box.height / cell);
       const s = document.createElement("canvas");
       s.width = cols; s.height = rows;
       const sc = s.getContext("2d", { willReadFrequently: true });
@@ -335,86 +520,39 @@ footer a:hover{color:var(--text)}
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
     };
-    const t0 = performance.now();
     const draw = (now) => {
       const box = canvas.getBoundingClientRect();
+      const css = getComputedStyle(root);
+      const ink = css.getPropertyValue("--glyph").trim(), ember = css.getPropertyValue("--glyph-ember").trim();
       ctx.clearRect(0, 0, box.width, box.height);
-      const age = (now - t0) / 1000;
+      const age = (now - started) / 1000;
       const step = Math.floor(now / 140);
       for (const c of cells) {
-        // Appears from the centre outwards in the first second.
-        const show = reduce ? 1 : Math.min(1, Math.max(0, (age * 1.4 - c.born * 0.8)));
+        const show = reduce ? 1 : Math.min(1, Math.max(0, age * 1.4 - c.born * 0.8));
         if (show <= 0) continue;
         const flick = !reduce && Math.sin(c.seed * 997 + step * 0.7) > 0.965;
         const k = Math.min(chars.length - 1, Math.floor(c.l * (chars.length - 1)) + (flick ? 2 : 0));
-        const ember = flick || c.l > 0.82;
         const a = Math.min(1, 0.35 + c.l * 1.1) * show;
-        ctx.fillStyle = ember ? `rgba(245,178,27,${a})` : `rgba(226,214,186,${a * 0.85})`;
+        ctx.fillStyle = flick || c.l > 0.82 ? `rgba(${ember},${a})` : `rgba(${ink},${a * 0.85})`;
         ctx.fillText(chars[k], c.x * cell + cell / 2, c.y * cell + cell / 2);
       }
     };
-    let visible = true, last = 0;
-    new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(canvas);
+    let visible = false, last = 0;
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (visible && !started) started = performance.now();
+    }, { threshold: 0.2 }).observe(canvas);
     const loop = (now) => {
       requestAnimationFrame(loop);
-      const fps = now - t0 < 1600 ? 60 : 10;
-      if (!visible || now - last < 1000 / fps) return;
+      if (!visible || !ctx) return;
+      const fps = now - started < 1600 ? 60 : 10;
+      if (now - last < 1000 / fps) return;
       last = now;
       draw(now);
     };
     document.fonts.ready.then(() => { setup(); requestAnimationFrame(loop); });
     let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(setup, 150); });
   };
-
-  // The tour: a real screenshot of each app in a window; the ember line under the tab shows the
-  // time left before the next one. Hovering or focusing the tour pauses it.
-  const apps = [
-    ["sheetforge", "SheetForge", "Un reporte de ventas de Excel con su gráfica, abierto tal cual"],
-    ["docforge", "DocForge", "Una propuesta con títulos, listas y tabla, lista para .docx"],
-    ["slideforge", "SlideForge", "Un plan de dos diapositivas con temas y vista de orador"],
-    ["pdfforge", "PDFForge", "Una factura con las herramientas para firmar, rellenar y unir"],
-    ["searchforge", "SearchForge", "778 mil archivos indexados y buscables al instante"],
-    ["mailforge", "MailForge", "Todas tus cuentas en una sola bandeja"],
-    ["forgelauncher", "ForgeLauncher", "Instala y actualiza toda la suite"]
-  ];
-  const tour = document.getElementById("tour");
-  const tabs = tour.querySelector(".tabs");
-  const screen = document.getElementById("screen");
-  const imgs = apps.map(([id, name], i) => {
-    const im = new Image();
-    im.src = `img/shots/${id}.webp`; im.alt = `${name}, captura de pantalla`;
-    im.loading = i ? "lazy" : "eager";
-    screen.appendChild(im); return im;
-  });
-  const buttons = apps.map(([id, name], i) => {
-    const b = document.createElement("button");
-    b.className = "tab"; b.setAttribute("role", "tab");
-    b.innerHTML = `<img src="img/apps/${id}.png" alt="">${name}<span class="run"></span>`;
-    b.addEventListener("click", () => show(i, true));
-    tabs.appendChild(b); return b;
-  });
-  let current = 0;
-  const show = (i, byHand) => {
-    current = i;
-    buttons.forEach((b, j) => {
-      b.setAttribute("aria-selected", j === i ? "true" : "false");
-      const r = b.querySelector(".run"); r.style.animation = "none"; void r.offsetWidth; r.style.animation = "";
-    });
-    imgs.forEach((im, j) => im.classList.toggle("on", j === i));
-    document.getElementById("barIco").src = `img/apps/${apps[i][0]}.png`;
-    document.getElementById("barTitle").textContent = apps[i][1];
-    document.getElementById("capText").innerHTML = `<strong>${apps[i][1]}</strong> · ${apps[i][2]}`;
-    document.getElementById("capCount").textContent = `${String(i + 1).padStart(2, "0")} / ${String(apps.length).padStart(2, "0")}`;
-    if (byHand) tour.classList.add("paused");
-  };
-  buttons.forEach((b) => b.querySelector(".run").addEventListener("animationend", () => {
-    if (!tour.classList.contains("paused")) show((current + 1) % apps.length);
-  }));
-  tour.addEventListener("mouseenter", () => tour.classList.add("paused"));
-  tour.addEventListener("mouseleave", () => tour.classList.remove("paused"));
-  tour.addEventListener("focusin", () => tour.classList.add("paused"));
-  show(0);
-  if (reduce) tour.classList.add("paused");
 })();
 </script>
 </body>
