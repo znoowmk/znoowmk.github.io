@@ -126,19 +126,31 @@ button{font:inherit;color:inherit}
 .menu a span{color:var(--text-3);font-family:var(--mono);font-size:12.5px}
 .menu a:hover{background:var(--bg-3)}
 
-.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;padding-top:88px;padding-bottom:88px}
+.scene{position:relative;overflow:hidden;background:#05080f;min-height:640px;display:flex;align-items:center}
+.scene picture,.scene .bg{position:absolute;inset:0;width:100%;height:100%}
+.scene .bg{object-fit:cover;object-position:62% 50%;transform:scale(1.06);animation:settle 2.4s var(--ease) forwards}
+@keyframes settle{to{transform:scale(1)}}
+.scene canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.scene .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,8,15,.92) 0%,rgba(5,8,15,.72) 34%,rgba(5,8,15,.1) 62%,rgba(5,8,15,0) 100%),linear-gradient(0deg,rgba(5,8,15,.55) 0%,rgba(5,8,15,0) 30%)}
+.hero{position:relative;z-index:1;max-width:640px;padding-top:96px;padding-bottom:96px;color:#eef1f8}
+.hero .lead{color:#c3cad8}
+.hero .meta{color:#8e98ae}.hero .meta a{color:#c3cad8}
+.hero h1 em{color:#f5b21b}
+.btn.ghost{color:#eef1f8;border-color:rgba(238,241,248,.28);background:rgba(5,8,15,.35)}
+.btn.ghost:hover{background:rgba(238,241,248,.08)}
+.hero .split{background:#eef1f8}.hero .split a,.hero .split summary{color:#0a0f1c}
+.hero .split summary{border-left-color:rgba(10,15,28,.2)}
 h1{font-size:68px;line-height:1;letter-spacing:-2px;font-weight:600;margin:0 0 24px}
 h1 em{font-style:normal;color:var(--ember-text)}
 .lead{color:var(--text-2);font-size:19px;line-height:1.55;margin:0 0 32px;max-width:40ch}
 .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
 .meta{color:var(--text-3);font-size:13px}
 .meta a{color:var(--text-2)}
-.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:22px 12px;justify-items:center}
+.grid{display:grid;grid-template-columns:repeat(11,1fr);gap:20px 8px;justify-items:center;padding-top:36px;padding-bottom:36px}
 .ic{display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;color:var(--text-2);font-size:13px;opacity:0;transform:translateY(10px);animation:rise .6s var(--ease) forwards;animation-delay:calc(var(--i) * 45ms + .15s)}
-.ic img{width:88px;height:88px;border-radius:20px;transition:transform .15s var(--ease)}
+.ic img{width:72px;height:72px;border-radius:16px;transition:transform .15s var(--ease)}
 .ic:hover{color:var(--text)}
 .ic:hover img{transform:translateY(-3px)}
-.ic.launcher{grid-column:3}
 
 .figures{display:grid;grid-template-columns:repeat(3,1fr)}
 .fig{padding:36px 48px;border-right:1px solid var(--line)}
@@ -216,15 +228,18 @@ footer a:hover{color:var(--text)}
 .rise{opacity:0;transform:translateY(12px);animation:rise .7s var(--ease) forwards}
 .rise.d1{animation-delay:.05s}.rise.d2{animation-delay:.1s}.rise.d3{animation-delay:.15s}
 @keyframes rise{to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.rise,.ic{animation:none;opacity:1;transform:none}.tab .run{display:none}html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){.rise,.ic,.scene .bg{animation:none;opacity:1;transform:none}.tab .run{display:none}html{scroll-behavior:auto}}
 
 @media (max-width:1000px){
   .pad,.label{padding-left:20px;padding-right:20px}
-  .hero{grid-template-columns:1fr;padding-top:48px;padding-bottom:56px;gap:48px}
+  .scene{min-height:0;align-items:flex-end}
+  .scene picture,.scene .bg,.scene canvas{height:340px;bottom:auto}
+  .scene .bg{object-position:66% 50%}
+  .scene .shade{background:linear-gradient(0deg,#05080f 0%,#05080f calc(100% - 340px),rgba(5,8,15,.2) calc(100% - 120px),rgba(5,8,15,0) 100%)}
+  .hero{padding-top:300px;padding-bottom:40px}
   h1{font-size:46px;letter-spacing:-1.2px}
-  .grid{grid-template-columns:repeat(4,1fr);gap:18px 8px}
-  .ic img{width:64px;height:64px;border-radius:15px}
-  .ic.launcher{grid-column:auto}
+  .grid{grid-template-columns:repeat(4,1fr);gap:18px 8px;padding-top:28px;padding-bottom:28px}
+  .ic img{width:60px;height:60px;border-radius:14px}
   .figures,.principles{grid-template-columns:1fr}
   .fig,.principles>div{border-right:0;border-bottom:1px solid var(--line);padding:28px 20px}
   .fig:last-child,.principles>div:last-child{border-bottom:0}
@@ -266,8 +281,14 @@ footer a:hover{color:var(--text)}
 <main class="sheet">
   <div class="band">
     <div class="label mono"><span><b>00</b> / Z-FORGE de Znoow</span><span class="r">Rust nativo · IA local · Linux y Windows</span></div>
-    <div class="hero pad">
-      <div>
+    <div class="scene">
+      <picture>
+        <source media="(max-width:700px)" srcset="img/forja-960.webp">
+        <img class="bg" src="img/forja.webp" alt="" width="1920" height="1088" fetchpriority="high">
+      </picture>
+      <canvas id="embers" aria-hidden="true"></canvas>
+      <div class="shade"></div>
+      <div class="hero pad">
         <h1 class="rise">Diez apps.<br>Una sola <em>fragua</em>.</h1>
         <p class="lead rise d1">Documentos, hojas de cálculo, presentaciones, PDF con OCR, correo, fotos y búsqueda. Nativas en Rust, con IA que corre en tu propio equipo.</p>
         <div class="cta rise d2">
@@ -280,12 +301,16 @@ footer a:hover{color:var(--text)}
               </div>
             </details>
           </div>
-          <a class="btn" href="#recorrido">Ver las apps</a>
+          <a class="btn ghost" href="#recorrido">Ver las apps</a>
         </div>
         <div class="meta mono rise d3"><span id="dlMeta">Linux x86_64 · Windows 10 y 11</span> · <a href="https://github.com/znoowmk/zforge-releases/releases">todas las versiones</a></div>
       </div>
-      <div class="grid" id="apps" aria-label="Las apps de Z-FORGE"></div>
     </div>
+  </div>
+
+  <div class="band">
+    <div class="label mono"><span><b>01</b> / Las apps</span><span class="r">Toca una para verla</span></div>
+    <div class="grid pad" id="apps" aria-label="Las apps de Z-FORGE"></div>
   </div>
 
   <div class="band">
@@ -297,7 +322,7 @@ footer a:hover{color:var(--text)}
   </div>
 
   <div class="band" id="recorrido">
-    <div class="label mono"><span><b>01</b> / Recorrido</span><span class="r">Capturas reales, sin retoques</span></div>
+    <div class="label mono"><span><b>02</b> / Recorrido</span><span class="r">Capturas reales, sin retoques</span></div>
     <div class="section pad">
       <div class="head">
         <h2>Cada app, como la conoces</h2>
@@ -315,7 +340,7 @@ footer a:hover{color:var(--text)}
   </div>
 
   <div class="band">
-    <div class="label mono"><span><b>02</b> / La suite</span><span class="r">Una apariencia, un instalador</span></div>
+    <div class="label mono"><span><b>03</b> / La suite</span><span class="r">Una apariencia, un instalador</span></div>
     <div class="section pad">
       <div class="head">
         <h2>Toda la suite</h2>
@@ -326,7 +351,7 @@ footer a:hover{color:var(--text)}
   </div>
 
   <div class="band">
-    <div class="label mono"><span><b>03</b> / Principios</span><span class="r">Hecha para quedarse en tu computadora</span></div>
+    <div class="label mono"><span><b>04</b> / Principios</span><span class="r">Hecha para quedarse en tu computadora</span></div>
     <div class="principles">
       <div><span class="n mono">Nativa</span><h3>Sin navegador escondido</h3><p>Escrita en Rust. Arranca al instante y usa poca memoria.</p></div>
       <div><span class="n mono">IA local</span><h3>Tus documentos, en tu equipo</h3><p>Funciona con Ollama en tu máquina. Nada sale a la nube.</p></div>
@@ -335,7 +360,7 @@ footer a:hover{color:var(--text)}
   </div>
 
   <div class="band" id="proyectos">
-    <div class="label mono"><span><b>04</b> / Código abierto</span><span class="r">github.com/znoowmk</span></div>
+    <div class="label mono"><span><b>05</b> / Código abierto</span><span class="r">github.com/znoowmk</span></div>
     <div class="section pad">
       <div class="head">
         <h2>Piezas para cualquiera</h2>
@@ -349,7 +374,7 @@ footer a:hover{color:var(--text)}
   </div>
 
   <div class="band" id="descargar">
-    <div class="label mono"><span><b>05</b> / Descargar</span><span class="r">Gratis</span></div>
+    <div class="label mono"><span><b>06</b> / Descargar</span><span class="r">Gratis</span></div>
     <div class="forgeband">
       <div class="txt">
         <h2>Instala toda la suite en un minuto</h2>
@@ -362,7 +387,7 @@ footer a:hover{color:var(--text)}
   </div>
 
   <div class="band" lang="en">
-    <div class="label mono"><span><b>06</b> / In English</span></div>
+    <div class="label mono"><span><b>07</b> / In English</span></div>
     <div class="section pad english">
       <h2>A native Rust office suite</h2>
       <p>Z-FORGE by Znoow: documents, spreadsheets, presentations, PDF with OCR, email, photos and instant file search, with AI that runs on your own computer. Free downloads for Linux and Windows on <a href="https://github.com/znoowmk/zforge-releases">GitHub</a>.</p>
@@ -403,10 +428,10 @@ footer a:hover{color:var(--text)}
   const index = document.getElementById("index");
   apps.forEach(([id, name, desc, cap], i) => {
     const a = document.createElement("a");
-    a.className = "ic" + (id === "forgelauncher" ? " launcher" : "");
+    a.className = "ic";
     a.style.setProperty("--i", i);
     a.href = cap ? "#recorrido" : "#index";
-    a.innerHTML = `<img src="img/apps/${id}.png" alt="" width="88" height="88">${name}`;
+    a.innerHTML = `<img src="img/apps/${id}.png" alt="" width="72" height="72">${name}`;
     a.title = desc;
     if (cap) a.addEventListener("click", () => show(tourApps.findIndex((t) => t[0] === id), true));
     grid.appendChild(a);
@@ -485,6 +510,62 @@ footer a:hover{color:var(--text)}
       setTimeout(() => (e.target.textContent = "Copiar"), 1600);
     }).catch(() => {});
   });
+
+
+  // Sparks rising from the hot steel in the photo: born near the bar, drift up and cool from
+  // yellow to deep orange before they fade.
+  (() => {
+    const cv = document.getElementById("embers");
+    if (!cv || reduce) return;
+    const ctx = cv.getContext("2d");
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let W = 0, H = 0, src = { x: 0, y: 0, w: 0 }, parts = [], on = true;
+    const img = document.querySelector(".scene .bg");
+    const size = () => {
+      const r = cv.getBoundingClientRect();
+      W = r.width; H = r.height;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // Where the bar sits once the 1920x1088 photo is cropped by object-fit: cover.
+      const mobile = W < 1000;
+      const px = mobile ? 0.70 : 0.62;
+      const k = Math.max(W / 1920, H / 1088);
+      const dw = 1920 * k, dh = 1088 * k;
+      const ox = (W - dw) * px, oy = (H - dh) * 0.5;
+      src = { x: ox + 0.555 * dw, y: oy + 0.62 * dh, w: 0.13 * dw };
+    };
+    const spawn = () => ({
+      x: src.x + (Math.random() - 0.3) * src.w,
+      y: src.y - Math.random() * 20,
+      vx: (Math.random() - 0.45) * 0.6,
+      vy: -(0.6 + Math.random() * 1.6),
+      life: 0, max: 90 + Math.random() * 140,
+      r: 0.6 + Math.random() * 1.4
+    });
+    new IntersectionObserver(([e]) => (on = e.isIntersecting)).observe(cv);
+    size(); addEventListener("resize", size);
+    const tick = () => {
+      requestAnimationFrame(tick);
+      if (!on) return;
+      ctx.clearRect(0, 0, W, H);
+      if (parts.length < 70 && Math.random() < 0.5) parts.push(spawn());
+      ctx.globalCompositeOperation = "lighter";
+      parts = parts.filter((p) => {
+        p.life++;
+        p.vx += (Math.random() - 0.5) * 0.05; p.vy *= 0.995;
+        p.x += p.vx; p.y += p.vy;
+        const t = p.life / p.max;
+        if (t >= 1) return false;
+        const a = t < 0.1 ? t * 10 : 1 - (t - 0.1) / 0.9;
+        const g = Math.round(220 - t * 140);
+        ctx.fillStyle = `rgba(255,${g},${Math.round(80 - t * 70)},${a * 0.9})`;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        return true;
+      });
+      ctx.globalCompositeOperation = "source-over";
+    };
+    if (img.complete) tick(); else img.addEventListener("load", tick, { once: true });
+  })();
 
   // The ForgeLauncher engraving, redrawn in the letters of "forge", embers flickering now and then.
   const canvas = document.getElementById("forge");
