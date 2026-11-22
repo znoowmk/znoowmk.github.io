@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://znoowmk.github.io/sitemap.xml

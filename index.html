@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Znoow · Z-FORGE, suite de oficina nativa en Rust</title>
+<meta name="description" content="Z-FORGE es una suite de oficina nativa en Rust creada por Znoow (znoowmk): documentos Word, hojas de cálculo Excel, presentaciones, PDF con OCR, correo y búsqueda de archivos, con IA que corre en tu propio equipo. Para Linux y Windows.">
+<meta name="author" content="Znoow">
+<link rel="canonical" href="https://znoowmk.github.io/">
+<link rel="icon" href="favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Znoow · Z-FORGE, suite de oficina nativa en Rust">
+<meta property="og:description" content="Documentos, hojas de cálculo, presentaciones, PDF con OCR y correo. Rápida, nativa y con IA local. Linux y Windows.">
+<meta property="og:url" content="https://znoowmk.github.io/">
+<meta property="og:image" content="https://znoowmk.github.io/img/shots/sheetforge.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://znoowmk.github.io/#znoow",
+      "name": "Znoow",
+      "alternateName": "znoowmk",
+      "url": "https://znoowmk.github.io/",
+      "sameAs": ["https://github.com/znoowmk", "https://crates.io/users/znoowmk"],
+      "knowsAbout": ["Rust", "Office software", "OCR", "PDF", "Local AI"]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Z-FORGE",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Linux, Windows",
+      "description": "Suite de oficina nativa en Rust: DocForge (documentos), SheetForge (hojas de cálculo), SlideForge (presentaciones), PDFForge (PDF y OCR), MailForge (correo), ZipForge, GalleryForge, SearchForge y ForgeLauncher.",
+      "author": {"@id": "https://znoowmk.github.io/#znoow"},
+      "downloadUrl": "https://github.com/znoowmk/zforge-releases",
+      "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+  ]
+}
+</script>
+<style>
+:root{--bg:#0a0f1c;--panel:#111a2e;--line:#1e2a44;--text:#eef1f8;--muted:#9aa6bf;--accent:#f5b21b;--max:1120px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 Inter,system-ui,sans-serif}
+a{color:inherit}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+header.top{display:flex;align-items:center;justify-content:space-between;padding:20px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;text-decoration:none}
+.brand img{width:28px;height:28px;border-radius:7px}
+nav a{color:var(--muted);text-decoration:none;margin-left:20px;font-size:15px}
+nav a:hover{color:var(--text)}
+.hero{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:center;padding:48px 0 64px}
+.hero h1{font-size:46px;line-height:1.1;font-weight:600;letter-spacing:-.5px;margin:0 0 16px}
+.hero p{color:var(--muted);font-size:18px;margin:0 0 28px;max-width:34ch}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:11px 18px;border-radius:10px;text-decoration:none;font-weight:500;border:1px solid var(--line)}
+.btn.primary{background:var(--text);color:var(--bg);border-color:var(--text)}
+.btn:hover{border-color:var(--muted)}
+.shot{width:100%;height:auto;border-radius:12px;border:1px solid var(--line);display:block}
+h2{font-size:28px;font-weight:600;margin:0 0 8px}
+.lead{color:var(--muted);margin:0 0 28px}
+section{padding:56px 0;border-top:1px solid var(--line)}
+.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.app{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;gap:14px;align-items:flex-start}
+.app img{width:44px;height:44px;border-radius:10px;flex:none}
+.app h3{margin:0 0 4px;font-size:16px;font-weight:600}
+.app p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.gallery figure{margin:0}
+.gallery figcaption{color:var(--muted);font-size:13px;margin-top:6px}
+.points{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.points h3{font-size:16px;margin:0 0 6px;font-weight:600}
+.points p{margin:0;color:var(--muted);font-size:15px}
+.projects{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.proj{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;text-decoration:none;display:block}
+.proj:hover{border-color:var(--muted)}
+.proj h3{margin:0 0 6px;font-size:16px;font-weight:600}
+.proj p{margin:0;color:var(--muted);font-size:14px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:14px}
+@media (max-width:860px){.hero{grid-template-columns:1fr;padding:24px 0 40px}.hero h1{font-size:34px}.apps,.points{grid-template-columns:1fr}.gallery,.projects{grid-template-columns:1fr}nav a{margin-left:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="brand" href="./"><img src="img/apps/forgelauncher.png" alt="">Znoow</a>
+  <nav><a href="#apps">Apps</a><a href="#proyectos">Proyectos</a><a href="https://github.com/znoowmk">GitHub</a></nav>
+</header>
+
+<div class="hero">
+  <div>
+    <h1>Z-FORGE, tu oficina nativa en Rust</h1>
+    <p>Documentos, hojas de cálculo, presentaciones, PDF con OCR y correo. Rápida, sin nube obligatoria y con IA que corre en tu equipo.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/znoowmk/zforge-releases#readme">Descargar para Linux y Windows</a>
+      <a class="btn" href="https://github.com/znoowmk">Ver en GitHub</a>
+    </div>
+  </div>
+  <img class="shot" src="img/shots/sheetforge.webp" alt="SheetForge, la hoja de cálculo de Z-FORGE, con un reporte de ventas y su gráfica" width="900" height="560">
+</div>
+
+<section id="apps">
+  <h2>Las apps</h2>
+  <p class="lead">Cada una abre los formatos que ya usas: <span class="mono">.docx .xlsx .pptx .pdf .odt .ods</span></p>
+  <div class="apps">
+    <div class="app"><img src="img/apps/docforge.png" alt=""><div><h3>DocForge</h3><p>Documentos de Word sin Word, con MindForge, un asistente de IA local que corrige, resume y traduce.</p></div></div>
+    <div class="app"><img src="img/apps/sheetforge.png" alt=""><div><h3>SheetForge</h3><p>Hojas de cálculo con fórmulas que dan lo mismo que Excel, y Macros IA que escriben y prueban tus macros.</p></div></div>
+    <div class="app"><img src="img/apps/slideforge.png" alt=""><div><h3>SlideForge</h3><p>Presentaciones que se ven igual que en PowerPoint, con gráficas, transiciones y vista de orador.</p></div></div>
+    <div class="app"><img src="img/apps/pdfforge.png" alt=""><div><h3>PDFForge</h3><p>Lee, firma, rellena, une, censura y protege PDF. OCR para escaneos con ForgeOCR.</p></div></div>
+    <div class="app"><img src="img/apps/mailforge.png" alt=""><div><h3>MailForge</h3><p>Todas tus cuentas de correo, calendario, tareas y contactos, con resúmenes por IA local.</p></div></div>
+    <div class="app"><img src="img/apps/searchforge.png" alt=""><div><h3>SearchForge</h3><p>Encuentra cualquier archivo del disco al instante, también por su contenido.</p></div></div>
+    <div class="app"><img src="img/apps/zipforge.png" alt=""><div><h3>ZipForge</h3><p>Comprime y descomprime, y mira fotos, PDF y documentos dentro del ZIP sin extraerlos.</p></div></div>
+    <div class="app"><img src="img/apps/galleryforge.png" alt=""><div><h3>GalleryForge y PixelForge</h3><p>Tus fotos por carpeta y un editor para ajustar, girar y ocultar datos.</p></div></div>
+    <div class="app"><img src="img/apps/forgelauncher.png" alt=""><div><h3>ForgeLauncher</h3><p>Instala y actualiza toda la suite desde un solo lugar.</p></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Por qué Z-FORGE</h2>
+  <p class="lead">Hecha para durar en tu computadora, no en la de alguien más.</p>
+  <div class="points">
+    <div><h3>Nativa y rápida</h3><p>Escrita en Rust. Arranca en un instante y usa poca memoria, sin navegador escondido.</p></div>
+    <div><h3>IA en tu equipo</h3><p>Funciona con Ollama en tu propia máquina: tus documentos no salen a ninguna nube.</p></div>
+    <div><h3>Tus formatos de siempre</h3><p>Abre y guarda archivos de Office y OpenDocument tal como se ven en Word, Excel y PowerPoint.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Cómo se ve</h2>
+  <div class="gallery">
+    <figure><img class="shot" loading="lazy" src="img/shots/docforge.webp" alt="DocForge editando una propuesta con títulos, listas y tabla" width="900" height="560"><figcaption>DocForge</figcaption></figure>
+    <figure><img class="shot" loading="lazy" src="img/shots/pdfforge.webp" alt="PDFForge mostrando una factura con herramientas para firmar y rellenar" width="900" height="560"><figcaption>PDFForge</figcaption></figure>
+    <figure><img class="shot" loading="lazy" src="img/shots/slideforge.webp" alt="SlideForge con un plan de dos diapositivas" width="900" height="560"><figcaption>SlideForge</figcaption></figure>
+    <figure><img class="shot" loading="lazy" src="img/shots/searchforge.webp" alt="SearchForge buscando entre cientos de miles de archivos" width="900" height="560"><figcaption>SearchForge</figcaption></figure>
+  </div>
+</section>
+
+<section id="proyectos">
+  <h2>Proyectos de código abierto</h2>
+  <p class="lead">Piezas de Z-FORGE publicadas para que cualquiera las use.</p>
+  <div class="projects">
+    <a class="proj" href="https://github.com/znoowmk/forge-ocr"><h3>forge-ocr</h3><p>OCR rápido y preciso para documentos escaneados en Rust: PP-OCRv5 sobre ONNX Runtime (TensorRT, CUDA o CPU), unas 10 páginas por segundo, PDF con texto buscable.</p></a>
+    <a class="proj" href="https://github.com/znoowmk/z-forge-cli"><h3>z-forge-cli</h3><p>Herramientas de línea de comandos y servidor MCP en Rust: CutForge, SpaceForge, DroidForge y SearchForge.</p></a>
+  </div>
+</section>
+
+<section lang="en">
+  <h2>In English</h2>
+  <p class="lead">Z-FORGE is a native Rust office suite by Znoow: documents, spreadsheets, presentations, PDF with OCR, email and instant file search, with AI that runs on your own computer. Free downloads for Linux and Windows on <a href="https://github.com/znoowmk/zforge-releases">GitHub</a>.</p>
+</section>
+</div>
+<footer><div class="wrap">© 2026 Znoow · <a href="https://github.com/znoowmk">github.com/znoowmk</a> · <a href="https://github.com/znoowmk/zforge-releases/blob/main/LICENCIAS.md">Licencias de terceros</a></div></footer>
+</body>
+</html>
